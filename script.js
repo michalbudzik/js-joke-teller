@@ -1,47 +1,47 @@
-const videoElement = document.getElementById('video');
-const buttonContainerStart = document.getElementById('button-container-start');
-const buttonContainerShare = document.getElementById('button-container-share');
-const buttonStart = document.getElementById('button-start');
-const buttonShare = document.getElementById('button-share');
+const button = document.getElementById('button');
+const audioElement = document.getElementById('audio');
 
-// Prompt to select media stream, pass to video element, then play
-async function selectMediaStream() {
+
+// Toggle button's disabled state
+function toggleButton() {
+    button.disabled = !button.disabled;
+} 
+
+// Pass joke text to Speech API
+function tellJoke(joke) {
+    VoiceRSS.speech({
+        key: '3c6553f5571f4145841f7e6bff75fd7b',
+        src: joke,
+        hl: 'en-us',
+        v: 'Linda',
+        r: 0,
+        c: 'mp3',
+        f: '44khz_16bit_stereo',
+        ssml: false
+    });
+}
+
+// Get Jokes from Joke API
+async function getJokes() {
+    let joke = '';   
+    const apiURL = 'https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit';
     try {
-        const mediaStream = await navigator.mediaDevices.getDisplayMedia();
-        videoElement.srcObject = mediaStream;
-        videoElement.onloadedmetadata = () => {
-            videoElement.play();
-            buttonContainerStart.hidden = false;
-            buttonContainerShare.hidden = true;
+        const response = await fetch(apiURL);
+        const data = await response.json();
+        if (data.setup) {
+            joke = `${data.setup} ... ${data.delivery}`;
+        } else {
+            joke = data.joke;
         }
+        // Call text to speech API
+        tellJoke(joke);
+        // Toggle button's state
+        toggleButton();
     } catch (error) {
-        // Catch error here
-        console.log('Sorry, error:', error);
+        // Catch Errors Here
+        console.log('Sorry,', error);
     }
 }
 
-// Start screen sharing on click
-buttonShare.addEventListener('click', selectMediaStream);
-
-// Start Picture in Picture on click
-buttonStart.addEventListener('click', async () => {
-    // Disable button when clicked
-    buttonContainerStart.hidden = true;
-    // Start Picture In Picture
-    if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-    } else {
-        await videoElement.requestPictureInPicture();
-    }
-});
-
-// Reset buttons and video when Picture In Picture is closed 
-videoElement.addEventListener("leavepictureinpicture", () => {
-    videoElement.pause();
-    videoElement.removeAttribute('src');
-    if (document.pictureInPictureElement) {
-        document.exitPictureInPicture();
-      }
-    buttonContainerStart.hidden = true;
-    buttonContainerShare.hidden = false;
-});
+button.addEventListener('click', getJokes);
+audioElement.addEventListener('ended', toggleButton);

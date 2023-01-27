@@ -1,29 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Picture In Picture</title>
-    <link rel="icon" type="image/png"
-        href="https://pl.gravatar.com/userimage/38519471/d27f42e60b69e1e9af62dae70243375b?size=200">
+    <title>Joke Teller</title>
+    <link rel="icon" type="image/png" href="https://pl.gravatar.com/userimage/38519471/d27f42e60b69e1e9af62dae70243375b?size=200">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <!-- Video -->
-    <video id="video" controls height="360" width="640" hidden></video>
-    <!-- Button Share -->
-    <div class="button-container" id="button-container-share">
-        <button id="button-share">Init Screen Sharing</button>
-    </div>
-    <!-- Button Start -->
-    <div class="button-container" id="button-container-start" hidden>
-        <button id="button-start">Start Picture In Picture</button>
+    <div class="container">
+        <button id="button">Tell Me A Joke</button>
+        <audio id="audio" controls hidden></audio>
     </div>
     <!-- Script -->
+    <script src="voice.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
